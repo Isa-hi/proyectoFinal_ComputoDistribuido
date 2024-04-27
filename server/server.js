@@ -12,11 +12,12 @@ const port = process.env.EXPRESS_PORT ?? 4000;
 const server = createServer(app); // Crear el servidor HTTP
 const io = new Server(server, { // Crear el servidor de WebSockets
   cors: {
-    origin: 'http://localhost:3000',
+    origin: '*',
     methods: ['GET', 'POST'],
     credentials: true,
   },
 });
+
 const db = new pg.Client({ // Crear la conexión a la base de datos
     user: process.env.PG_USER,
     host: process.env.PG_HOST,
@@ -31,18 +32,18 @@ await db.query('CREATE TABLE IF NOT EXISTS messages (id SERIAL PRIMARY KEY, mess
 app.use(logger('dev'));
 app.use(cors({ // Habilitar CORS para que cualquier cliente pueda conectarse
     origin: '*',
-    credentials: true,
+    credentials: false, // No se requieren cookies para la conexión
 }));
 
 
-io.on('connection', async (socket) => {
-    console.log('a user connected');
+io.on('connection', async (socket) => { // Each client gets its own socket
+    console.log('User connected to ', socket.id);
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', () => { // When a specific client disconnects
         console.log('user disconnected');
     });
 
-    socket.on('chat message', async (msg) => {
+    socket.on('chat message', async (msg) => { // When a client sends a message
         let result
         try {
             // TODO: Obtener el usuario que envió el mensaje

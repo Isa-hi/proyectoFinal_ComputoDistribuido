@@ -2,6 +2,8 @@ import express from 'express';
 import logger from 'morgan';
 import env from 'dotenv';
 import axios from 'axios';
+import { Server } from 'socket.io';
+import { io } from 'socket.io-client';
 
 env.config();
 const app = express();
@@ -10,7 +12,15 @@ app.use(logger('dev'));
 
 const CHAT_API = 'http://localhost:4000/'
 
+const socket = io(CHAT_API); 
+
 app.use(express.static('public'));
+
+// Each client gets its own socket
+socket.on('connect', () => { // Conectar al servidor de chat
+    console.log('Connected to chat server', socket.id);
+});
+
 
 app.get('/', async (req, res) => {
    // const result = await axios.get(`${CHAT_API}`);
