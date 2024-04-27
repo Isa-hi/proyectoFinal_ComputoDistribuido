@@ -40,7 +40,7 @@
             e.preventDefault();
 
             if (input.value) { // Si tenemos algun valor en el input se envía el valor al servidor
-                socket.emit('chat message', {'message': input.value, 'user_name': 'User uno'});
+                socket.emit('chat message', {'message': input.value, 'user_name': '<%= locals.user_name %>'});
                 input.value = '';
             }
         });
@@ -48,13 +48,13 @@
 </head>
 <body>
     <div class="fluid-container d-flex justify-content-center">
-        <div class="col-8">
+        <div class="col-6">
             <h2>Chat</h2>
             <div id="messages">
 
             <% if(locals.messages) {%>
                 <% locals.messages.forEach(function(msgObj) { %>
-                    <div class="fluid-container bg-primary">
+                    <div class="col-10 message-container">
                         <p><%= msgObj.user_name %></p>
                         <div class="fluid-container">
                             <p><%= msgObj.message %></p>
