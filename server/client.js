@@ -11,8 +11,7 @@ const port = process.env.CLIENT_PORT ?? 3000;
 app.use(logger('dev'));
 
 const CHAT_API = 'http://localhost:4000/'
-
-const socket = io(CHAT_API); 
+const socket = io(CHAT_API); // Conectar al servidor de chat
 
 app.use(express.static('public'));
 
@@ -23,8 +22,10 @@ socket.on('connect', () => { // Conectar al servidor de chat
 
 
 app.get('/', async (req, res) => {
-   // const result = await axios.get(`${CHAT_API}`);
-    res.render(process.cwd() + '/client/chat.ejs');
+   const result = await axios.get(`${CHAT_API}`);
+   const messagesObj = result.data; // Contiene id, message, user_id
+   console.log(messagesObj);
+   res.render(process.cwd() + '/client/chat.ejs', { messages: messagesObj });
 });
 
 app.listen(port, () => {
