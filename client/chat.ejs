@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SocketChat</title>
 
-    <script type="module">
+    <script type="module" src="http://localhost:4000/socket.io/socket.io.js">
         import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
 
-        const socket = io();
+        const socket = io('http://localhost:4000');
 
         const form = document.getElementById('form')
         const input = document.getElementById('input')
         const messages = document.getElementById('messages')
-
-        socket.on('chat message', (msg) => {
+        
+        socket.on('chat message', (msg) => { //Se llama cada vez que se recibe un mensaje
             const item = document.createElement('li');
             item.textContent = msg;
             messages.insertAdjacentElement('beforeend', item);
@@ -34,12 +34,13 @@
     <h1>Eso tiling</h1>
 
     <ul id="messages">
-
+        
+        <!-- Aquí mete los mensajes del chat -->
     </ul>
 
-    <!-- Aquí mete los tasks del form y enviar -->
     <form id="form" action="">
-        <input id="input" autocomplete="off" /><button type="submit">Send</button>
+        <input id="input" autocomplete="off" />
+        <button type="submit">Send</button>
     </form>
 </body>
 </html>
