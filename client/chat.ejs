@@ -29,19 +29,42 @@
 
             const message = document.createElement('p');
             message.textContent = msgObj.message;
+
             messageContainer.appendChild(message);
+            
+            // Create a new 'a' element for the "View file" button
+            const viewFileButton = document.createElement('a');
+            // Set the href attribute to the URL of the file
+            viewFileButton.href = '/view/' + msgObj.file_path;
+            // Set the target attribute to '_blank' to open the file in a new tab
+            viewFileButton.target = '_blank';
+            // Set the text of the button
+            viewFileButton.textContent = 'View file';
+            // Append the button to the message container
+            messageContainer.appendChild(viewFileButton);
 
             item.appendChild(messageContainer);
 
             messages.insertAdjacentElement('beforeend', item);
         });
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            if (input.value) { // Si tenemos algun valor en el input se envía el valor al servidor
-                socket.emit('chat message', {'message': input.value, 'user_name': '<%= locals.user_name %>'});
+            if (input.value) {
+                const formData = new FormData();
+                formData.append('file', document.getElementById('file').files[0]);
+                // Upload the file to the server
+                const response = await fetch('http://localhost:4000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                // Get the file's ID from the response
+                const { fileId } = await response.json();
+                // Emit the 'chat message' event with the file's ID
+                socket.emit('chat message', {'message': input.value, 'user_name': '<%= locals.user_name %>', 'fileId': fileId, 'file_path': document.getElementById('file').files[0].name});
                 input.value = '';
+                //Reset the file input
+                document.getElementById('file').value = '';
             }
         });
     </script>
@@ -58,6 +81,9 @@
                         <p><%= msgObj.user_name %></p>
                         <div class="fluid-container">
                             <p><%= msgObj.message %></p>
+                            <% if(msgObj.file_id) { %>
+                                <a href="/view/<%= msgObj.file_path %>" target="_blank">View file</a>                           
+                            <% } %>
                         </div>
                     </div>
                 <% }); %>
@@ -67,6 +93,7 @@
             </div>
     
         <form id="form" action="">
+            <input type="file" id="file" accept=".dox, .pdf">
             <input id="input" autocomplete="off" />
             <button type="submit">Send</button>
         </form>

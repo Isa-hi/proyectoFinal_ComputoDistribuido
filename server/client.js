@@ -5,6 +5,13 @@ import axios from 'axios';
 import { Server } from 'socket.io';
 import { io } from 'socket.io-client';
 import bodyParser from 'body-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 env.config();
 const app = express();
@@ -26,10 +33,15 @@ socket.on('connect', () => { // Conectar al servidor de chat
 
 
 app.get('/', async (req, res) => {
+    if(global_username == undefined) {
+        res.redirect('/register');
+    } else {
    const result = await axios.get(`${CHAT_API}`);
    const messagesObj = result.data; // Contiene id, message, user_id
+   
    //console.log(messagesObj);
    res.render(process.cwd() + '/client/chat.ejs', { messages: messagesObj, user_name: global_username });
+    }
 });
 
 app.get('/register', async (req, res) => {
@@ -76,6 +88,30 @@ app.post('/login', async (req, res) => {
         res.redirect('/login');
     }
 });
+
+app.post('/upload', async (req, res) => {
+  const formData = new FormData();
+  formData.append('file', req.files.file.data);
+  const result = await axios.post(`${CHAT_API}upload`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }
+  });
+  if(result.status == 200) {
+    console.log('File uploaded successfully');
+  } else {
+    console.log('Error uploading file');
+  }
+});
+
+app.get('/view/uploads/:file_path', (req, res) => {
+    // Get the file path from the URL parameters
+    const file_path = req.params.file_path;
+    // Create an absolute path to the file
+    const absolutePath = path.resolve(__dirname, '..',  'uploads', file_path);
+    // Send the file
+    res.sendFile(absolutePath);
+  });
 
 app.listen(port, () => {
     console.log(`Client listening at http://localhost:${port}`);
