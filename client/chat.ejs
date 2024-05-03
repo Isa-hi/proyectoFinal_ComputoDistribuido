@@ -73,7 +73,10 @@
 <body>
     <div class="fluid-container d-flex justify-content-center">
         <div class="col-8">
-            <h2>Chat</h2>
+            <div class="div d-flex justify-content-center mt-4">
+                <h2>Chat utilizando Sockets</h2>
+            </div>
+            
             <div id="messages">
 
             <% if(locals.messages) {%>
@@ -83,7 +86,7 @@
                         <div class="fluid-container">
                             <p><%= msgObj.message %></p>
                             <% if(msgObj.file_id) { %>
-                                <i class="bi bi-file-earmark-fill"></i><a href="/view/<%= msgObj.file_path %>" target="_blank">Ver archivo</a>                           
+                                <a href="/view/<%= msgObj.file_path %>" target="_blank">📁 Ver archivo</a>                           
                             <% } %>
                         </div>
                     </div>
@@ -94,9 +97,10 @@
             </div>
 
             <form id="form" action="">
+                <label for="file" class="file_btn">📁 Selecciona un archivo:</label>
                 <input type="file" id="file" accept=".dox, .pdf">
-                <input id="input" autocomplete="off" />
-                <button type="submit">Enviar</button>
+                <input id="input" class="msg_input" autocomplete="off" />
+                <button type="submit" class="btn">Enviar</button>
             </form>
         </div>
     </div>
