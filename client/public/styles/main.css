@@ -1,0 +1,14 @@
+#messages {
+   margin-top: 10px;
+   padding: 10px;
+   border: 1px solid black;
+   height: 80vh;
+   overflow: auto;
+}
+.message-container > div{
+   margin-top: -15px;
+   background-color: #f1f1f1;
+   padding: 15px;
+   border-radius: 15px;
+
+}

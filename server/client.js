@@ -21,10 +21,10 @@ app.use(logger('dev'));
 const CHAT_API = 'http://localhost:4000/'
 const socket = io(CHAT_API); // Conectar al servidor de chat
 
-app.use(express.static('public'));
+app.use(express.static('client/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let global_username;
+let global_username = "test";
 
 // Each client gets its own socket
 socket.on('connect', () => { // Conectar al servidor de chat

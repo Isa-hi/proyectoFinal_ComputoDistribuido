@@ -35,7 +35,6 @@ await db.query('CREATE TABLE IF NOT EXISTS messages (id SERIAL PRIMARY KEY, mess
 // Crear la tabla de USUARIOS si no existe
 await db.query('CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, user_name VARCHAR(50) UNIQUE NOT NULL, password VARCHAR(50) NOT NULL)');
 
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) { // Configurar el almacenamiento de archivos
         cb(null, './uploads');
